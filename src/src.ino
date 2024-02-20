@@ -17,10 +17,7 @@ WiFiClient wifiClient;
 
 
 void setup(void) {
-
-
   Serial.begin(115200);
-
   Serial.println("Connecting to WiFi");
 
   WiFi.disconnect();
@@ -36,43 +33,32 @@ void setup(void) {
 
   sensors.begin();
   if (!bmp.begin()) {
-    Serial.println("Could not find a valid BMP085 sensor, check wiring!");
+    Serial.println("Could not find BMP085");
     while (1) delay(10);
   }
   if (!aht.begin()) {
-    Serial.println("Could not find AHT? Check wiring");
+    Serial.println("Could not find AHT");
     while (1) delay(10);
   }
+
 }
 
 void loop(void) {
-  sensors.requestTemperatures(); 
-  float tempC = sensors.getTempCByIndex(0);
-  Serial.println(tempC);
-
-  Serial.print("Temperature = ");
-  Serial.print(bmp.readTemperature());
-  Serial.println(" *C");
-    
-  Serial.print("Pressure = ");
-  Serial.print(bmp.readPressure());
-  Serial.println(" Pa");
-//
-  sensors_event_t humidity, temp;
-  aht.getEvent(&humidity, &temp);
-  Serial.print("Temperature: "); Serial.print(temp.temperature); Serial.println(" degrees C");
-  Serial.print("Humidity: "); Serial.print(humidity.relative_humidity); Serial.println("% rH");
-
+  
   http.begin(wifiClient, API_URL);
   http.addHeader("Content-Type", "application/json");
   http.addHeader("Authorization", API_PASSWORD);
   Serial.print("Server response: ");
 
   String json = String("{");
+
+  sensors.requestTemperatures(); 
   json.concat("\"temperature\" : ");
   json.concat(sensors.getTempCByIndex(0));
   json.concat(", ");
 
+  sensors_event_t humidity, temp;
+  aht.getEvent(&humidity, &temp);
   json.concat("\"humidity\" : ");
   json.concat(humidity.relative_humidity);
   json.concat(", ");
