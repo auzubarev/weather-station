@@ -83,6 +83,6 @@ void loop(void) {
   json.concat("}");
   
   Serial.print(http.POST(json));
-  delay(5000);
+  delay(240000);
 
 }
