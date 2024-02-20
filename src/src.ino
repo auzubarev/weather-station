@@ -65,6 +65,7 @@ void loop(void) {
 
   http.begin(wifiClient, API_URL);
   http.addHeader("Content-Type", "application/json");
+  http.addHeader("Authorization", API_PASSWORD);
   Serial.print("Server response: ");
 
   String json = String("{");
